@@ -90,6 +90,30 @@ class SemanticTensorMemory {
     }
 
     createMemoryEntry(memoryId, orchestrationResult) {
+        const normalizeEmbedding = (embedding) => {
+            if (!embedding) return null;
+            if (Array.isArray(embedding)) return [...embedding];
+            if (Array.isArray(embedding?.values)) return [...embedding.values];
+            if (Array.isArray(embedding?.embedding)) return [...embedding.embedding];
+            return null;
+        };
+
+        const textEmbedding = normalizeEmbedding(
+            orchestrationResult.agentResults?.text?.textAnalysis?.embeddings
+        );
+        const visionEmbedding = normalizeEmbedding(
+            orchestrationResult.agentResults?.vision?.visionAnalysis?.embeddings
+        );
+        const orchestratorEmbedding = normalizeEmbedding(
+            orchestrationResult.orchestratorSynthesis?.embeddings
+        );
+
+        const unifiedEmbedding = orchestratorEmbedding || visionEmbedding || textEmbedding || null;
+        const embeddingDimension = unifiedEmbedding?.length
+            || visionEmbedding?.length
+            || textEmbedding?.length
+            || 0;
+
         const entry = {
             // Core metadata
             memoryId,
@@ -112,13 +136,13 @@ class SemanticTensorMemory {
                     confidence: orchestrationResult.orchestratorSynthesis?.confidence || 0
                 }
             },
-            
-            // Embeddings tensor (removed to save space)
+
+            // Embeddings tensor
             embeddingsTensor: {
-                unified: null, // Embeddings removed to save storage space
-                text: null,
-                vision: null,
-                dimension: 0
+                unified: unifiedEmbedding,
+                text: textEmbedding,
+                vision: visionEmbedding,
+                dimension: embeddingDimension
             },
             
             // Semantic features
