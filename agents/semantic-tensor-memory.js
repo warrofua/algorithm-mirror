@@ -113,6 +113,12 @@ class SemanticTensorMemory {
             || visionEmbedding?.length
             || textEmbedding?.length
             || 0;
+        const textSummary = orchestrationResult.agentResults.text?.textAnalysis?.summary?.substring(0, 200);
+        const textSummaryWithEllipsis = textSummary ? `${textSummary}...` : '';
+        const visionSynthesis = orchestrationResult.agentResults.vision?.visionAnalysis?.synthesis?.substring(0, 200);
+        const visionSynthesisWithEllipsis = visionSynthesis ? `${visionSynthesis}...` : '';
+        const orchestratorAnalysis = orchestrationResult.orchestratorSynthesis?.unifiedAnalysis?.substring(0, 200);
+        const orchestratorAnalysisWithEllipsis = orchestratorAnalysis ? `${orchestratorAnalysis}...` : '';
 
         const entry = {
             // Core metadata
@@ -124,15 +130,15 @@ class SemanticTensorMemory {
             // Agent outputs (summary only to save space)
             agentOutputs: {
                 text: {
-                    summary: orchestrationResult.agentResults.text?.textAnalysis?.summary?.substring(0, 200) + '...' || '',
+                    summary: textSummaryWithEllipsis,
                     confidence: orchestrationResult.agentResults.text?.confidence || 0
                 },
                 vision: {
-                    synthesis: orchestrationResult.agentResults.vision?.visionAnalysis?.synthesis?.substring(0, 200) + '...' || '',
+                    synthesis: visionSynthesisWithEllipsis,
                     confidence: orchestrationResult.agentResults.vision?.confidence || 0
                 },
                 orchestrator: {
-                    unifiedAnalysis: orchestrationResult.orchestratorSynthesis?.unifiedAnalysis?.substring(0, 200) + '...' || '',
+                    unifiedAnalysis: orchestratorAnalysisWithEllipsis,
                     confidence: orchestrationResult.orchestratorSynthesis?.confidence || 0
                 }
             },

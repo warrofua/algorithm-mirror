@@ -316,11 +316,13 @@ class ClaudeyBackground {
             
             console.log('📊 Vision analysis complete - Category:', category);
             
+            const sanitizedVisionResult = this.sanitizeVisionResult(visionResult);
+
             // Store the complete analysis in legacy format for UI compatibility
             await this.storeMemoryEntry({
                 ...analysis,
                 analysis: unifiedAnalysis,
-                visionResult: visionResult,
+                visionResult: sanitizedVisionResult,
                 memoryId: memoryResult.memoryId,
                 embeddings: visionResult.visionAnalysis.embeddings,
                 category,
@@ -338,7 +340,7 @@ class ClaudeyBackground {
                         screenshot,
                         analysis: unifiedAnalysis,
                         category,
-                        visionResult: visionResult,
+                        visionResult: sanitizedVisionResult,
                         memoryId: memoryResult.memoryId
                     }
                 });
@@ -593,20 +595,25 @@ class ClaudeyBackground {
         // Update active analysis
         const activeAnalysis = this.activeAnalysis.get(analysisId);
         if (activeAnalysis) {
+            const sanitizedVisionResult = this.sanitizeVisionResult(activeAnalysis.visionResult);
+
             activeAnalysis.status = 'complete';
             activeAnalysis.analysis = analysis;
             activeAnalysis.embeddings = embeddings;
             activeAnalysis.category = category;
-            
+            activeAnalysis.visionResult = sanitizedVisionResult;
+
             // Store in memory
             await this.storeMemoryEntry(activeAnalysis);
-            
+
             // Clean up active analysis
             this.activeAnalysis.delete(analysisId);
         }
     }
 
     async storeMemoryEntry(entry) {
+        const sanitizedVisionResult = this.sanitizeVisionResult(entry.visionResult);
+
         const memoryEntry = {
             id: entry.memoryId || `memory_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
             timestamp: entry.timestamp,
@@ -615,7 +622,7 @@ class ClaudeyBackground {
             analysis: entry.analysis,
             embeddings: entry.embeddings,
             category: entry.category,
-            visionResult: entry.visionResult,        // Store vision result instead of orchestration
+            visionResult: sanitizedVisionResult,     // Store sanitized vision result
             agentVersion: 'vision-only-v1',         // Updated version
             type: 'page_analysis'
         };
@@ -736,6 +743,26 @@ class ClaudeyBackground {
             console.error('Failed to extract page content:', error);
             return '<html><body>Content extraction failed</body></html>';
         }
+    }
+
+    sanitizeVisionResult(visionResult) {
+        if (!visionResult) {
+            return visionResult;
+        }
+
+        const sanitizedResult = typeof structuredClone === 'function'
+            ? structuredClone(visionResult)
+            : JSON.parse(JSON.stringify(visionResult));
+
+        if (sanitizedResult.rawData) {
+            delete sanitizedResult.rawData.screenshot;
+
+            if (Object.keys(sanitizedResult.rawData).length === 0) {
+                delete sanitizedResult.rawData;
+            }
+        }
+
+        return sanitizedResult;
     }
 
     categorizeContentFromOrchestration(orchestrationResult) {
