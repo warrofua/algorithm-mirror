@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claudey AI Vision - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1c 0%, #2c2c2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .save-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .save-indicator.saved {
+            background: rgba(48, 209, 88, 0.2);
+            color: #30d158;
+            border: 1px solid rgba(48, 209, 88, 0.3);
+        }
+
+        .save-indicator.saving {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .save-indicator.error {
+            background: rgba(255, 69, 58, 0.2);
+            color: #ff453a;
+            border: 1px solid rgba(255, 69, 58, 0.3);
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 30px;
+            grid-template-columns: 1fr;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-section:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-icon {
+            font-size: 24px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-left: 36px;
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .setting-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .setting-input:focus {
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+        }
+
+        .setting-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .setting-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .setting-select:focus {
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+        }
+
+        .setting-select option {
+            background: #2c2c2e;
+            color: #ffffff;
+        }
+
+        .setting-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: #007aff;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        .setting-range {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .setting-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007aff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .setting-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #007aff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .range-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .range-value {
+            color: #007aff;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn.primary {
+            background: linear-gradient(45deg, #007aff, #0056cc);
+            border-color: #007aff;
+        }
+
+        .btn.primary:hover {
+            background: linear-gradient(45deg, #0056cc, #004499);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff453a, #cc362d);
+            border-color: #ff453a;
+        }
+
+        .btn.danger:hover {
+            background: linear-gradient(45deg, #cc362d, #992824);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .status-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            color: #30d158;
+        }
+
+        .status-error {
+            color: #ff453a;
+        }
+
+        .status-warning {
+            color: #ffc107;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .model-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .model-card.selected {
+            border-color: #007aff;
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .model-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #007aff;
+            font-weight: bold;
+        }
+
+        .model-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .model-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.3;
+        }
+
+        .model-size {
+            font-size: 11px;
+            color: #007aff;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .warning-title {
+            color: #ffc107;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .model-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                    <path d="M5 10v2a7 7 0 0 0 14 0v-2"/>
+                    <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
+                <h1>Settings</h1>
+            </div>
+            <div class="save-indicator" id="saveIndicator">
+                All changes saved
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="settings-grid">
+            <!-- AI Configuration -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <span class="section-icon">🤖</span>
+                    <div>
+                        <div class="section-title">AI Configuration</div>
+                        <div class="section-description">Configure your AI models and analysis settings</div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">AI Vision Status</label>
+                    <div class="setting-description">Enable or disable automatic AI analysis of web pages</div>
+                    <div class="setting-toggle">
+                        <div class="toggle-switch active" id="aiToggle">
+                            <div class="toggle-slider"></div>
+                        </div>
+                        <span id="aiToggleLabel">AI Vision Active</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Analysis Interval</label>
+                    <div class="setting-description">How often to automatically capture and analyze pages (in seconds)</div>
+                    <input type="range" class="setting-range" id="analysisInterval" min="10" max="300" value="30">
+                    <div class="range-display">
+                        <span>10s</span>
+                        <span class="range-value" id="intervalValue">30s</span>
+                        <span>5m</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Ollama Endpoint</label>
+                    <div class="setting-description">URL for your local Ollama installation</div>
+                    <input type="text" class="setting-input" id="ollamaEndpoint" placeholder="http://localhost:11434" value="http://localhost:11434">
+                </div>
+            </div>
+
+            <!-- Model Selection -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <span class="section-icon">🧠</span>
+                    <div>
+                        <div class="section-title">Model Selection</div>
+                        <div class="section-description">Choose your AI models for vision and text processing</div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <div class="warning-title">
+                        ⚠️ Model Requirements
+                    </div>
+                    <div class="warning-text">
+                        Vision models require significant system resources. Make sure you have sufficient RAM and processing power. 
+                        Models must be installed in Ollama before they can be used.
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Vision Language Model (VLM)</label>
+                    <div class="setting-description">Model used for analyzing screenshots and visual content</div>
+                    <div class="model-grid" id="vlmModels">
+                        <!-- Models will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Embedding Model</label>
+                    <div class="setting-description">Model used for generating semantic embeddings for search</div>
+                    <select class="setting-select" id="embeddingModel">
+                        <option value="nomic-embed-text">nomic-embed-text (274MB)</option>
+                        <option value="all-minilm">all-minilm (67MB)</option>
+                        <option value="mxbai-embed-large">mxbai-embed-large (669MB)</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn" id="refreshModels">🔄 Refresh Available Models</button>
+                    <button class="btn" id="installModel">📥 Install New Model</button>
+                </div>
+            </div>
+
+            <!-- Privacy & Storage -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <span class="section-icon">🔒</span>
+                    <div>
+                        <div class="section-title">Privacy & Storage</div>
+                        <div class="section-description">Manage your data and privacy settings</div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Memory Retention</label>
+                    <div class="setting-description">How long to keep analyzed memories (days)</div>
+                    <input type="range" class="setting-range" id="retentionDays" min="1" max="365" value="30">
+                    <div class="range-display">
+                        <span>1 day</span>
+                        <span class="range-value" id="retentionValue">30 days</span>
+                        <span>1 year</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Excluded Domains</label>
+                    <div class="setting-description">Domains to exclude from AI analysis (one per line)</div>
+                    <textarea class="setting-input" id="excludedDomains" rows="4" placeholder="banking.example.com&#10;private-site.com&#10;localhost"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn danger" id="clearMemories">🗑️ Clear All Memories</button>
+                    <button class="btn" id="exportMemories">📤 Export Memories</button>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <span class="section-icon">📊</span>
+                    <div>
+                        <div class="section-title">System Status</div>
+                        <div class="section-description">Current system status and diagnostics</div>
+                    </div>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Ollama Connection</span>
+                    <span class="status-value" id="ollamaStatus">Checking...</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Vision Model</span>
+                    <span class="status-value" id="vlmStatus">Checking...</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Embedding Model</span>
+                    <span class="status-value" id="embeddingStatus">Checking...</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Total Memories</span>
+                    <span class="status-value" id="totalMemories">0</span>
+                </div>
+
+                <div class="status-item">
+                    <span class="status-label">Storage Used</span>
+                    <span class="status-value" id="storageUsed">0 MB</span>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn" id="runDiagnostics">🔍 Run Diagnostics</button>
+                    <button class="btn" id="testCapture">📸 Test Capture</button>
+                    <button class="btn" id="testVLM">🧠 Test VLM Connection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+</html>

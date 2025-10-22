@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claudey AI Browser - Visual Intelligence</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Modern Browser Header -->
+        <header class="browser-header">
+            <div class="browser-controls">
+                <div class="traffic-lights">
+                    <span class="light close"></span>
+                    <span class="light minimize"></span>
+                    <span class="light maximize"></span>
+                </div>
+                <div class="nav-controls">
+                    <button id="back-btn" class="nav-btn" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m15 18-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <button id="forward-btn" class="nav-btn" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </button>
+                    <button id="refresh-btn" class="nav-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="address-bar-container">
+                    <input type="url" id="address-bar" placeholder="Enter URL or search..." value="https://example.com">
+                    <button id="go-btn" class="go-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ai-controls">
+                    <button id="memory-btn" class="ai-btn" title="Memory Timeline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </button>
+                    <button id="ai-toggle-btn" class="ai-btn active" title="AI Vision">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                    </button>
+                    <div class="status-indicator" id="ai-status">
+                        <span class="pulse"></span>
+                        <span class="status-text">AI Active</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Browser Viewport -->
+            <div class="browser-viewport" id="viewport">
+                <div class="loading-overlay" id="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <span>Loading...</span>
+                </div>
+                <iframe id="browser-frame" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation">
+                    Your browser doesn't support iframes.
+                </iframe>
+                
+                <!-- PDF Viewer (hidden by default) -->
+                <div class="pdf-viewer" id="pdf-viewer" style="display: none;">
+                    <div class="pdf-controls">
+                        <button id="pdf-prev">←</button>
+                        <span id="pdf-page-info">Page 1 of 1</span>
+                        <button id="pdf-next">→</button>
+                        <button id="pdf-zoom-out">-</button>
+                        <span id="pdf-zoom">100%</span>
+                        <button id="pdf-zoom-in">+</button>
+                        <button id="pdf-close">✕</button>
+                    </div>
+                    <canvas id="pdf-canvas"></canvas>
+                </div>
+                
+                <!-- Screenshot Overlay -->
+                <div class="screenshot-overlay" id="screenshot-overlay"></div>
+            </div>
+
+        </main>
+        
+        <!-- AI Analysis Sidebar -->
+        <aside class="ai-sidebar" id="ai-sidebar">
+            <div class="sidebar-header">
+                <h3>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                        <path d="M5 10v2a7 7 0 0 0 14 0v-2"/>
+                        <line x1="12" x2="12" y1="19" y2="22"/>
+                    </svg>
+                    AI Vision
+                </h3>
+                <div class="sidebar-controls">
+                    <button id="capture-btn" class="capture-btn" title="Manual Capture">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                            <circle cx="12" cy="13" r="3"/>
+                        </svg>
+                    </button>
+                    <button id="settings-btn" class="settings-btn" title="Settings">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m10-6a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0V5Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Live Analysis Feed -->
+            <div class="analysis-feed" id="analysis-feed">
+                <div class="analysis-item welcome">
+                    <div class="timestamp">Just now</div>
+                    <div class="analysis-content">
+                        <p>🔍 <strong>AI Vision Active</strong></p>
+                        <p>I'm watching and analyzing everything on your screen. Navigate to any website and I'll provide real-time insights.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Memory Search -->
+            <div class="memory-search">
+                <div class="search-container">
+                    <input type="text" id="memory-search" placeholder="Search memory...">
+                    <button id="search-memory-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Memory Timeline Modal -->
+        <div class="memory-modal" id="memory-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Memory Timeline</h2>
+                    <button id="close-memory-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="timeline-container" id="timeline-container">
+                    <!-- Timeline items will be generated here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- PDF Upload Zone -->
+        <div class="pdf-drop-zone" id="pdf-drop-zone">
+            <div class="drop-content">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                </svg>
+                <h3>Drop PDF here</h3>
+                <p>Or click to browse files</p>
+                <input type="file" id="pdf-upload" accept=".pdf" hidden>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    <!-- Check if we're in Electron -->
+    <script>
+        if (typeof require !== 'undefined') {
+            // We're in Electron, use the Electron renderer
+            document.write('<script src="electron-renderer.js"><\/script>');
+        } else {
+            // We're in a web browser, use the web version
+            document.write('<script src="script.js"><\/script>');
+        }
+    </script>
+</body>
+</html>

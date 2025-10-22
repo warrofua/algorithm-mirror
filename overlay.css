@@ -1,0 +1,478 @@
+/* Claudey AI Vision - Overlay Styles */
+
+/* Prevent conflicts with page styles */
+#claudey-toggle,
+#claudey-sidebar,
+.claudey-notification {
+  all: initial !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  box-sizing: border-box !important;
+  z-index: 2147483647 !important; /* Maximum z-index */
+}
+
+/* Toggle Button */
+#claudey-toggle {
+  position: fixed !important;
+  top: 50% !important;
+  right: 20px !important;
+  transform: translateY(-50%) !important;
+  width: 48px !important;
+  height: 48px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-radius: 24px !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#claudey-toggle:hover {
+  transform: translateY(-50%) scale(1.1) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.claudey-toggle-inner {
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Sidebar */
+#claudey-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  right: -400px !important;
+  width: 380px !important;
+  height: 100vh !important;
+  background: rgba(26, 26, 28, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  transition: right 0.3s ease !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+#claudey-sidebar.claudey-visible {
+  right: 0 !important;
+}
+
+#claudey-sidebar.claudey-hidden {
+  right: -400px !important;
+}
+
+/* Sidebar Header */
+.claudey-sidebar-header {
+  padding: 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.claudey-sidebar-header h3 {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+}
+
+.claudey-controls {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.claudey-controls button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+}
+
+.claudey-controls button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Status Indicator */
+.claudey-status {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.claudey-status-indicator {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 6px 12px !important;
+}
+
+.claudey-pulse {
+  width: 8px !important;
+  height: 8px !important;
+  background: #30d158 !important;
+  border-radius: 50% !important;
+  animation: claudey-pulse 2s infinite !important;
+}
+
+@keyframes claudey-pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.claudey-status-text {
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 500 !important;
+}
+
+/* Analysis Feed */
+.claudey-analysis-feed {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+  scroll-behavior: smooth !important;
+}
+
+.claudey-welcome {
+  background: rgba(0, 122, 255, 0.1) !important;
+  border: 1px solid rgba(0, 122, 255, 0.3) !important;
+  border-radius: 10px !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+.claudey-welcome p {
+  margin: 0 0 8px 0 !important;
+  color: #ffffff !important;
+}
+
+.claudey-welcome p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.claudey-analysis-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+  margin-bottom: 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+.claudey-analysis-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 8px !important;
+  font-size: 11px !important;
+}
+
+.claudey-category {
+  background: rgba(0, 122, 255, 0.2) !important;
+  color: #007aff !important;
+  padding: 2px 6px !important;
+  border-radius: 10px !important;
+  text-transform: capitalize !important;
+  font-weight: 500 !important;
+  font-size: 10px !important;
+}
+
+.claudey-timestamp {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 10px !important;
+}
+
+.claudey-analysis-text {
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin: 8px 0 !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+.claudey-analysis-url {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 9px !important;
+  margin-top: 6px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.claudey-expand-btn {
+  background: rgba(0, 122, 255, 0.2) !important;
+  border: 1px solid rgba(0, 122, 255, 0.4) !important;
+  color: #007aff !important;
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  margin-top: 6px !important;
+  transition: all 0.2s ease !important;
+  display: block !important;
+}
+
+.claudey-expand-btn:hover {
+  background: rgba(0, 122, 255, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+}
+
+.claudey-analysis-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(0, 122, 255, 0.3) !important;
+}
+
+.claudey-analysis-item:hover::before {
+  content: '👆 Click to visit page' !important;
+  position: absolute !important;
+  top: -25px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: rgba(0, 122, 255, 0.9) !important;
+  color: white !important;
+  padding: 3px 8px !important;
+  border-radius: 12px !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+  z-index: 1000 !important;
+}
+
+.claudey-analysis-item.analyzing {
+  border-color: rgba(255, 193, 7, 0.5) !important;
+}
+
+.claudey-analysis-item.error {
+  border-color: rgba(255, 69, 58, 0.5) !important;
+}
+
+.claudey-analysis-item.complete {
+  border-color: rgba(48, 209, 88, 0.5) !important;
+}
+
+.claudey-timestamp {
+  font-size: 11px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  margin-bottom: 8px !important;
+  font-weight: 500 !important;
+}
+
+.claudey-url {
+  font-size: 12px !important;
+  color: #007aff !important;
+  margin-bottom: 8px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.claudey-url:hover {
+  color: #0056cc !important;
+  text-decoration: underline !important;
+  transform: scale(1.02) !important;
+}
+
+.claudey-screenshot {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 120px !important;
+  object-fit: cover !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin: 8px 0 !important;
+}
+
+.claudey-analysis {
+  color: #ffffff !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  margin-bottom: 8px !important;
+}
+
+.claudey-category {
+  display: inline-block !important;
+  background: #bf5af2 !important;
+  color: white !important;
+  padding: 4px 8px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+}
+
+/* Search */
+.claudey-search {
+  padding: 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  display: flex !important;
+  gap: 8px !important;
+}
+
+#claudey-search-input {
+  flex: 1 !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  outline: none !important;
+}
+
+#claudey-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+#claudey-search-input:focus {
+  border-color: #007aff !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.3) !important;
+}
+
+#claudey-search-btn {
+  background: #007aff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  color: white !important;
+  width: 36px !important;
+  height: 36px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+}
+
+#claudey-search-btn:hover {
+  background: #0056cc !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Search Results */
+.claudey-search-results {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+.claudey-search-results h4 {
+  margin: 0 0 8px 0 !important;
+  color: #007aff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.claudey-search-results p {
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 12px !important;
+}
+
+.claudey-no-results {
+  text-align: center !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-style: italic !important;
+  padding: 20px !important;
+}
+
+/* Notifications */
+.claudey-notification {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  background: rgba(26, 26, 28, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+  transition: all 0.3s ease !important;
+  max-width: 300px !important;
+}
+
+.claudey-notification.claudey-show {
+  transform: translateX(0) !important;
+  opacity: 1 !important;
+}
+
+.claudey-notification.claudey-success {
+  border-color: rgba(48, 209, 88, 0.5) !important;
+  background: rgba(48, 209, 88, 0.1) !important;
+}
+
+.claudey-notification.claudey-error {
+  border-color: rgba(255, 69, 58, 0.5) !important;
+  background: rgba(255, 69, 58, 0.1) !important;
+}
+
+.claudey-notification.claudey-info {
+  border-color: rgba(0, 122, 255, 0.5) !important;
+  background: rgba(0, 122, 255, 0.1) !important;
+}
+
+/* Custom Scrollbar */
+.claudey-analysis-feed::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.claudey-analysis-feed::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.claudey-analysis-feed::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 3px !important;
+}
+
+.claudey-analysis-feed::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #claudey-sidebar {
+    width: 100vw !important;
+    right: -100vw !important;
+  }
+  
+  #claudey-sidebar.claudey-visible {
+    right: 0 !important;
+  }
+  
+  #claudey-toggle {
+    right: 10px !important;
+  }
+}
