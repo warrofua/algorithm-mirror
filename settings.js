@@ -3,7 +3,7 @@
  * Manages extension configuration and system diagnostics
  */
 
-class ClaudeySettings {
+class AlgorithmMirrorSettings {
     constructor() {
         this.settings = {
             isActive: true,
@@ -29,9 +29,9 @@ class ClaudeySettings {
 
     async loadSettings() {
         try {
-            const result = await chrome.storage.local.get(['claudeySettings']);
-            if (result.claudeySettings) {
-                this.settings = { ...this.settings, ...result.claudeySettings };
+            const result = await chrome.storage.local.get(['algorithmMirrorSettings']);
+            if (result.algorithmMirrorSettings) {
+                this.settings = { ...this.settings, ...result.algorithmMirrorSettings };
             }
         } catch (error) {
             console.error('Failed to load settings:', error);
@@ -41,7 +41,7 @@ class ClaudeySettings {
     async saveSettings() {
         try {
             this.showSaveIndicator('saving');
-            await chrome.storage.local.set({ claudeySettings: this.settings });
+            await chrome.storage.local.set({ algorithmMirrorSettings: this.settings });
             
             // Notify background script
             await chrome.runtime.sendMessage({
@@ -326,7 +326,7 @@ class ClaudeySettings {
                 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(dataBlob);
-                link.download = `claudey-memories-${new Date().toISOString().split('T')[0]}.json`;
+                link.download = `algorithm-mirror-memories-${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
                 
                 this.showNotification('Memories exported successfully');
@@ -431,7 +431,7 @@ class ClaudeySettings {
 }
 
 // Initialize settings when page loads
-let claudeySettings;
+let algorithmMirrorSettings;
 document.addEventListener('DOMContentLoaded', () => {
-    claudeySettings = new ClaudeySettings();
+    algorithmMirrorSettings = new AlgorithmMirrorSettings();
 });

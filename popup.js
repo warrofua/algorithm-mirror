@@ -3,7 +3,7 @@
  * Handles the extension popup interface
  */
 
-class ClaudeyPopup {
+class AlgorithmMirrorPopup {
     constructor() {
         this.isAIActive = true;
         this.stats = {
@@ -287,5 +287,5 @@ class ClaudeyPopup {
 
 // Initialize popup when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new ClaudeyPopup();
+    new AlgorithmMirrorPopup();
 });

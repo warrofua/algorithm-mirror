@@ -3,10 +3,10 @@
  * Runs on all web pages to provide AI overlay and analysis
  */
 
-// Prevent multiple class declarations
-if (typeof ClaudeyContentScript === 'undefined') {
-    
-class ClaudeyContentScript {
+// Prevent multiple class declarations by attaching to window
+if (typeof window.AlgorithmMirrorContentScript === 'undefined') {
+
+window.AlgorithmMirrorContentScript = class AlgorithmMirrorContentScript {
     constructor() {
         this.isInjected = false;
         this.sidebar = null;
@@ -21,10 +21,10 @@ class ClaudeyContentScript {
 
     async init() {
         // Prevent multiple injections
-        if (window.claudeyInjected) {
+        if (window.algorithmMirrorInjected) {
             return;
         }
-        window.claudeyInjected = true;
+        window.algorithmMirrorInjected = true;
 
         // Setup message listener
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -51,9 +51,9 @@ class ClaudeyContentScript {
 
     createToggleButton() {
         const toggleBtn = document.createElement('div');
-        toggleBtn.id = 'claudey-toggle';
+        toggleBtn.id = 'algorithm-mirror-toggle';
         toggleBtn.innerHTML = `
-            <div class="claudey-toggle-inner">
+            <div class="algorithm-mirror-toggle-inner">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
@@ -67,11 +67,11 @@ class ClaudeyContentScript {
 
     async createSidebar() {
         const sidebar = document.createElement('div');
-        sidebar.id = 'claudey-sidebar';
-        sidebar.className = 'claudey-hidden';
+        sidebar.id = 'algorithm-mirror-sidebar';
+        sidebar.className = 'algorithm-mirror-hidden';
         
         sidebar.innerHTML = `
-            <div class="claudey-sidebar-header">
+            <div class="algorithm-mirror-sidebar-header">
                 <h3>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
@@ -80,31 +80,31 @@ class ClaudeyContentScript {
                     </svg>
                     Algorithm Mirror
                 </h3>
-                <div class="claudey-controls">
-                    <button id="claudey-capture" title="Manual Capture">📸</button>
-                    <button id="claudey-memory" title="Memory Timeline">🧠</button>
-                    <button id="claudey-settings" title="Settings">⚙️</button>
-                    <button id="claudey-close" title="Close">✕</button>
+                <div class="algorithm-mirror-controls">
+                    <button id="algorithm-mirror-capture" title="Manual Capture">📸</button>
+                    <button id="algorithm-mirror-memory" title="Memory Timeline">🧠</button>
+                    <button id="algorithm-mirror-settings" title="Settings">⚙️</button>
+                    <button id="algorithm-mirror-close" title="Close">✕</button>
                 </div>
             </div>
             
-            <div class="claudey-status">
-                <div class="claudey-status-indicator">
-                    <span class="claudey-pulse"></span>
-                    <span class="claudey-status-text">AI Active</span>
+            <div class="algorithm-mirror-status">
+                <div class="algorithm-mirror-status-indicator">
+                    <span class="algorithm-mirror-pulse"></span>
+                    <span class="algorithm-mirror-status-text">AI Active</span>
                 </div>
             </div>
             
-            <div class="claudey-analysis-feed" id="claudey-feed">
-                <div class="claudey-welcome">
+            <div class="algorithm-mirror-analysis-feed" id="algorithm-mirror-feed">
+                <div class="algorithm-mirror-welcome">
                     <p><strong>🔍 Algorithm Mirror Active</strong></p>
                     <p>I'm watching and analyzing your browsing. I'll provide insights about the content you view.</p>
                 </div>
             </div>
             
-            <div class="claudey-search">
-                <input type="text" id="claudey-search-input" placeholder="Search memory...">
-                <button id="claudey-search-btn">🔍</button>
+            <div class="algorithm-mirror-search">
+                <input type="text" id="algorithm-mirror-search-input" placeholder="Search memory...">
+                <button id="algorithm-mirror-search-btn">🔍</button>
             </div>
         `;
 
@@ -117,26 +117,26 @@ class ClaudeyContentScript {
 
     setupSidebarEvents() {
         // Close button
-        document.getElementById('claudey-close').addEventListener('click', () => {
+        document.getElementById('algorithm-mirror-close').addEventListener('click', () => {
             this.toggleSidebar();
         });
 
         // Manual capture
-        document.getElementById('claudey-capture').addEventListener('click', () => {
+        document.getElementById('algorithm-mirror-capture').addEventListener('click', () => {
             this.manualCapture();
         });
 
         // Memory timeline
-        document.getElementById('claudey-memory').addEventListener('click', () => {
+        document.getElementById('algorithm-mirror-memory').addEventListener('click', () => {
             this.openMemoryTimeline();
         });
 
         // Search
-        document.getElementById('claudey-search-btn').addEventListener('click', () => {
+        document.getElementById('algorithm-mirror-search-btn').addEventListener('click', () => {
             this.searchMemory();
         });
 
-        document.getElementById('claudey-search-input').addEventListener('keypress', (e) => {
+        document.getElementById('algorithm-mirror-search-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.searchMemory();
             }
@@ -147,11 +147,11 @@ class ClaudeyContentScript {
         this.isVisible = !this.isVisible;
         
         if (this.isVisible) {
-            this.sidebar.classList.remove('claudey-hidden');
-            this.sidebar.classList.add('claudey-visible');
+            this.sidebar.classList.remove('algorithm-mirror-hidden');
+            this.sidebar.classList.add('algorithm-mirror-visible');
         } else {
-            this.sidebar.classList.remove('claudey-visible');
-            this.sidebar.classList.add('claudey-hidden');
+            this.sidebar.classList.remove('algorithm-mirror-visible');
+            this.sidebar.classList.add('algorithm-mirror-hidden');
         }
     }
 
@@ -363,26 +363,26 @@ Focus on describing what content users are being served and shown.`;
     }
 
     addAnalysisItem(data) {
-        const feed = document.getElementById('claudey-feed');
-        const welcomeMsg = feed.querySelector('.claudey-welcome');
+        const feed = document.getElementById('algorithm-mirror-feed');
+        const welcomeMsg = feed.querySelector('.algorithm-mirror-welcome');
         if (welcomeMsg) {
             welcomeMsg.remove();
         }
 
         const item = document.createElement('div');
-        item.className = 'claudey-analysis-item';
+        item.className = 'algorithm-mirror-analysis-item';
         item.dataset.timestamp = data.timestamp;
         
         const timeAgo = this.formatTimeAgo(new Date(data.timestamp));
         const domain = new URL(data.url).hostname;
         
         item.innerHTML = `
-            <div class="claudey-timestamp">${timeAgo}</div>
-            <div class="claudey-content">
-                <div class="claudey-url" onclick="window.open('${data.url}', '_blank')" title="Click to visit page">📍 ${domain}</div>
-                <img src="${data.screenshot}" class="claudey-screenshot" alt="Screenshot">
-                <div class="claudey-analysis">${data.analysis}</div>
-                ${data.category ? `<div class="claudey-category">${data.category}</div>` : ''}
+            <div class="algorithm-mirror-timestamp">${timeAgo}</div>
+            <div class="algorithm-mirror-content">
+                <div class="algorithm-mirror-url" onclick="window.open('${data.url}', '_blank')" title="Click to visit page">📍 ${domain}</div>
+                <img src="${data.screenshot}" class="algorithm-mirror-screenshot" alt="Screenshot">
+                <div class="algorithm-mirror-analysis">${data.analysis}</div>
+                ${data.category ? `<div class="algorithm-mirror-category">${data.category}</div>` : ''}
             </div>
         `;
         
@@ -390,7 +390,7 @@ Focus on describing what content users are being served and shown.`;
         item.style.cursor = 'pointer';
         item.addEventListener('click', (e) => {
             // Don't navigate if clicking on the URL specifically (it has its own handler)
-            if (!e.target.classList.contains('claudey-url')) {
+            if (!e.target.classList.contains('algorithm-mirror-url')) {
                 window.open(data.url, '_blank');
             }
         });
@@ -398,7 +398,7 @@ Focus on describing what content users are being served and shown.`;
         feed.insertBefore(item, feed.firstChild);
 
         // Limit items in feed
-        const items = feed.querySelectorAll('.claudey-analysis-item');
+        const items = feed.querySelectorAll('.algorithm-mirror-analysis-item');
         if (items.length > 20) {
             items[items.length - 1].remove();
         }
@@ -412,19 +412,19 @@ Focus on describing what content users are being served and shown.`;
         if (!item) return;
 
         if (updates.analysis) {
-            const analysisDiv = item.querySelector('.claudey-analysis');
+            const analysisDiv = item.querySelector('.algorithm-mirror-analysis');
             analysisDiv.textContent = updates.analysis;
         }
 
         if (updates.category) {
-            const existingCategory = item.querySelector('.claudey-category');
+            const existingCategory = item.querySelector('.algorithm-mirror-category');
             if (existingCategory) {
                 existingCategory.textContent = updates.category;
             } else {
                 const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'claudey-category';
+                categoryDiv.className = 'algorithm-mirror-category';
                 categoryDiv.textContent = updates.category;
-                item.querySelector('.claudey-content').appendChild(categoryDiv);
+                item.querySelector('.algorithm-mirror-content').appendChild(categoryDiv);
             }
         }
 
@@ -446,36 +446,36 @@ Focus on describing what content users are being served and shown.`;
     }
     
     updateAnalysisFeed(entry) {
-        const feed = document.getElementById('claudey-feed');
+        const feed = document.getElementById('algorithm-mirror-feed');
         if (!feed) return;
         
         // Remove welcome message
-        const welcome = feed.querySelector('.claudey-welcome');
+        const welcome = feed.querySelector('.algorithm-mirror-welcome');
         if (welcome) welcome.remove();
         
         // Create analysis entry
         const analysisDiv = document.createElement('div');
-        analysisDiv.className = 'claudey-analysis-item';
+        analysisDiv.className = 'algorithm-mirror-analysis-item';
         
         const truncatedAnalysis = entry.analysis.length > 150 ? entry.analysis.substring(0, 150) + '...' : entry.analysis;
         const showExpandButton = entry.analysis.length > 150;
         
         analysisDiv.innerHTML = `
-            <div class="claudey-analysis-header">
-                <span class="claudey-category">${entry.category}</span>
-                <span class="claudey-timestamp">${this.formatTimeAgo(entry.timestamp)}</span>
+            <div class="algorithm-mirror-analysis-header">
+                <span class="algorithm-mirror-category">${entry.category}</span>
+                <span class="algorithm-mirror-timestamp">${this.formatTimeAgo(entry.timestamp)}</span>
             </div>
-            <div class="claudey-analysis-text" data-analysis-id="${entry.timestamp}">
+            <div class="algorithm-mirror-analysis-text" data-analysis-id="${entry.timestamp}">
                 <div class="analysis-preview">${truncatedAnalysis}</div>
                 <div class="analysis-full" style="display: none;">${entry.analysis}</div>
-                ${showExpandButton ? '<button class="claudey-expand-btn">Show More</button>' : ''}
+                ${showExpandButton ? '<button class="algorithm-mirror-expand-btn">Show More</button>' : ''}
             </div>
-            <div class="claudey-analysis-url">${entry.url}</div>
+            <div class="algorithm-mirror-analysis-url">${entry.url}</div>
         `;
         
         // Add click handler for expand button
         if (showExpandButton) {
-            const expandBtn = analysisDiv.querySelector('.claudey-expand-btn');
+            const expandBtn = analysisDiv.querySelector('.algorithm-mirror-expand-btn');
             expandBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.toggleSidebarAnalysis(entry.timestamp);
@@ -486,7 +486,7 @@ Focus on describing what content users are being served and shown.`;
         feed.insertBefore(analysisDiv, feed.firstChild);
         
         // Keep only last 5 entries
-        const items = feed.querySelectorAll('.claudey-analysis-item');
+        const items = feed.querySelectorAll('.algorithm-mirror-analysis-item');
         if (items.length > 5) {
             items[items.length - 1].remove();
         }
@@ -498,7 +498,7 @@ Focus on describing what content users are being served and shown.`;
 
         const preview = analysisContainer.querySelector('.analysis-preview');
         const full = analysisContainer.querySelector('.analysis-full');
-        const button = analysisContainer.querySelector('.claudey-expand-btn');
+        const button = analysisContainer.querySelector('.algorithm-mirror-expand-btn');
 
         if (full.style.display === 'none') {
             // Expand
@@ -538,7 +538,7 @@ Focus on describing what content users are being served and shown.`;
     }
 
     async searchMemory() {
-        const query = document.getElementById('claudey-search-input').value.trim();
+        const query = document.getElementById('algorithm-mirror-search-input').value.trim();
         if (!query) return;
 
         try {
@@ -554,9 +554,9 @@ Focus on describing what content users are being served and shown.`;
     }
 
     displaySearchResults(results, query) {
-        const feed = document.getElementById('claudey-feed');
+        const feed = document.getElementById('algorithm-mirror-feed');
         feed.innerHTML = `
-            <div class="claudey-search-results">
+            <div class="algorithm-mirror-search-results">
                 <h4>🔍 Search: "${query}"</h4>
                 <p>Found ${results.length} results</p>
             </div>
@@ -573,7 +573,7 @@ Focus on describing what content users are being served and shown.`;
         });
 
         if (results.length === 0) {
-            feed.innerHTML += '<div class="claudey-no-results">No results found</div>';
+            feed.innerHTML += '<div class="algorithm-mirror-no-results">No results found</div>';
         }
     }
 
@@ -584,17 +584,17 @@ Focus on describing what content users are being served and shown.`;
     showNotification(message, type = 'info') {
         // Create temporary notification
         const notification = document.createElement('div');
-        notification.className = `claudey-notification claudey-${type}`;
+        notification.className = `algorithm-mirror-notification algorithm-mirror-${type}`;
         notification.textContent = message;
         
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            notification.classList.add('claudey-show');
+            notification.classList.add('algorithm-mirror-show');
         }, 100);
         
         setTimeout(() => {
-            notification.classList.remove('claudey-show');
+            notification.classList.remove('algorithm-mirror-show');
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
@@ -602,19 +602,19 @@ Focus on describing what content users are being served and shown.`;
             }, 300);
         }, 3000);
     }
-}
+};
 
-} // End of ClaudeyContentScript class definition check
+} // End of AlgorithmMirrorContentScript class definition check
+
+const initializeAlgorithmMirrorContentScript = () => {
+    if (!window.algorithmMirrorContentScript) {
+        window.algorithmMirrorContentScript = new window.AlgorithmMirrorContentScript();
+    }
+};
 
 // Initialize content script only once
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!window.claudeyContentScript) {
-            window.claudeyContentScript = new ClaudeyContentScript();
-        }
-    });
+    document.addEventListener('DOMContentLoaded', initializeAlgorithmMirrorContentScript, { once: true });
 } else {
-    if (!window.claudeyContentScript) {
-        window.claudeyContentScript = new ClaudeyContentScript();
-    }
+    initializeAlgorithmMirrorContentScript();
 }

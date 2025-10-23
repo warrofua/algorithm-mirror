@@ -2,7 +2,7 @@ const { app, BrowserWindow, BrowserView, ipcMain, nativeImage, screen, dialog } 
 const path = require('path');
 const fs = require('fs');
 
-class ClaudeyElectronBrowser {
+class AlgorithmMirrorElectronBrowser {
     constructor() {
         this.mainWindow = null;
         this.browserView = null;
@@ -271,4 +271,4 @@ class ClaudeyElectronBrowser {
 }
 
 // Create the application
-new ClaudeyElectronBrowser();
+new AlgorithmMirrorElectronBrowser();

@@ -5,7 +5,7 @@
 
 const { ipcRenderer } = require('electron');
 
-class ClaudeyElectronRenderer {
+class AlgorithmMirrorElectronRenderer {
     constructor() {
         // Core state
         this.isAIActive = true;
@@ -577,5 +577,5 @@ Focus on describing what content users are being served and shown.`;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.claudeyRenderer = new ClaudeyElectronRenderer();
+    window.algorithmMirrorRenderer = new AlgorithmMirrorElectronRenderer();
 });
