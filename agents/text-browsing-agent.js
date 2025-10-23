@@ -4,12 +4,30 @@
  */
 
 class TextBrowsingAgent {
-    constructor(ollamaEndpoint = 'http://localhost:8081') {
+    constructor(config = {}) {
+        if (typeof config === 'string') {
+            config = { ollamaEndpoint: config };
+        }
+
+        const {
+            ollamaEndpoint = 'http://localhost:8081',
+            embeddingModel = 'nomic-embed-text'
+        } = config;
+
         this.ollamaEndpoint = ollamaEndpoint;
         this.textModel = 'llama3.1:8b'; // For text analysis
-        this.embeddingModel = 'nomic-embed-text';
+        this.embeddingModel = embeddingModel;
         this.agentId = `text-agent-${Date.now()}`;
         this.conversationHistory = [];
+    }
+
+    updateEmbeddingConfig({ ollamaEndpoint, embeddingModel } = {}) {
+        if (ollamaEndpoint) {
+            this.ollamaEndpoint = ollamaEndpoint;
+        }
+        if (embeddingModel) {
+            this.embeddingModel = embeddingModel;
+        }
     }
 
     /**

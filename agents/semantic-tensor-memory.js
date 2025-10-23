@@ -4,7 +4,17 @@
  */
 
 class SemanticTensorMemory {
-    constructor(maxMemories = 100) {
+    constructor(config = {}) {
+        if (typeof config === 'number') {
+            config = { maxMemories: config };
+        }
+
+        const {
+            maxMemories = 100,
+            embeddingModel = 'nomic-embed-text',
+            ollamaEndpoint = 'http://localhost:8081'
+        } = config;
+
         this.maxMemories = maxMemories;
         this.memoryStore = new Map();
         this.embeddingIndex = new Map();
@@ -13,9 +23,20 @@ class SemanticTensorMemory {
         this.relationshipGraph = new Map();
         this.conversationHistory = [];
         this.systemId = `tensor-memory-${Date.now()}`;
-        
+        this.embeddingModel = embeddingModel;
+        this.ollamaEndpoint = ollamaEndpoint;
+
         // Initialize indices
         this.initializeIndices();
+    }
+
+    updateEmbeddingConfig({ ollamaEndpoint, embeddingModel } = {}) {
+        if (ollamaEndpoint) {
+            this.ollamaEndpoint = ollamaEndpoint;
+        }
+        if (embeddingModel) {
+            this.embeddingModel = embeddingModel;
+        }
     }
 
     initializeIndices() {
@@ -524,13 +545,18 @@ class SemanticTensorMemory {
         }
     }
 
-    async generateQueryEmbedding(query) {
+    async generateQueryEmbedding(query, options = {}) {
+        const {
+            embeddingModel = this.embeddingModel || 'nomic-embed-text',
+            ollamaEndpoint = this.ollamaEndpoint || 'http://localhost:8081'
+        } = options;
+
         try {
-            const response = await fetch('http://localhost:8081/api/embeddings', {
+            const response = await fetch(`${ollamaEndpoint}/api/embeddings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'nomic-embed-text',
+                    model: embeddingModel,
                     prompt: query
                 })
             });

@@ -4,6 +4,19 @@
  */
 
 class VisionAgent {
+    constructor(config = {}) {
+        if (typeof config === 'string') {
+            config = { ollamaEndpoint: config };
+        }
+
+        const {
+            ollamaEndpoint = 'http://localhost:8081',
+            embeddingModel = 'nomic-embed-text'
+        } = config;
+
+        this.ollamaEndpoint = ollamaEndpoint;
+        this.visionModel = 'llava:7b';
+        this.embeddingModel = embeddingModel;
     constructor(ollamaEndpoint = 'http://localhost:8081', visionModel = 'llava:7b') {
         this.ollamaEndpoint = ollamaEndpoint;
         this.visionModel = visionModel;
@@ -12,6 +25,12 @@ class VisionAgent {
         this.conversationHistory = [];
     }
 
+    updateEmbeddingConfig({ ollamaEndpoint, embeddingModel } = {}) {
+        if (ollamaEndpoint) {
+            this.ollamaEndpoint = ollamaEndpoint;
+        }
+        if (embeddingModel) {
+            this.embeddingModel = embeddingModel;
     setVisionModel(visionModel) {
         if (!visionModel || typeof visionModel !== 'string') {
             console.warn('VisionAgent: Invalid vision model provided, keeping existing model.');
