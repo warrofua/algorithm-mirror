@@ -29,7 +29,7 @@ class ClaudeyBackground {
 
     async initializeAgentSystem() {
         console.log('🚀 Initializing Vision Agent System...');
-        
+
         // Get settings for endpoint configuration
         const settings = await this.getSettings();
         const endpoint = settings.ollamaEndpoint || 'http://localhost:8081';
@@ -46,12 +46,21 @@ class ClaudeyBackground {
         // this.orchestratorAgent = new OrchestratorAgent(endpoint); // Commented out for now
         this.semanticMemory = new SemanticTensorMemory({ ollamaEndpoint: endpoint, embeddingModel });
         
+        const visionModel = settings.vlmModel || 'llava:7b';
+
+        // Initialize only vision agent for now
+        // this.textAgent = new TextBrowsingAgent(endpoint);         // Commented out for now
+        this.visionAgent = new VisionAgent(endpoint, visionModel);
+        // this.orchestratorAgent = new OrchestratorAgent(endpoint); // Commented out for now
+        this.semanticMemory = new SemanticTensorMemory();
+
         // Connect orchestrator to agents (commented out for now)
         // this.orchestratorAgent.initialize(this.textAgent, this.visionAgent);
-        
+
         console.log('✅ Vision Agent System initialized with:');
         // console.log('  - Text Browsing Agent:', this.textAgent.agentId);
         console.log('  - Vision Agent:', this.visionAgent.agentId);
+        console.log('    • Model:', this.visionAgent.visionModel);
         // console.log('  - Orchestrator Agent:', this.orchestratorAgent.agentId);
         console.log('  - Semantic Memory System:', this.semanticMemory.systemId);
     }
@@ -589,6 +598,18 @@ class ClaudeyBackground {
                 })();
                 return true; // Keep the message channel open for async response
 
+            case 'SETTINGS_UPDATED':
+                (async () => {
+                    try {
+                        await this.applySettingsUpdate(message.data);
+                        sendResponse({ success: true });
+                    } catch (error) {
+                        console.error('Failed to apply settings update:', error);
+                        sendResponse({ success: false, error: error.message });
+                    }
+                })();
+                return true;
+
             case 'PERMISSIONS_GRANTED':
                 (async () => {
                     try {
@@ -609,6 +630,46 @@ class ClaudeyBackground {
             default:
                 sendResponse({ error: 'Unknown message type' });
                 return false;
+        }
+    }
+
+    async applySettingsUpdate(newSettings = {}) {
+        try {
+            if (typeof newSettings.isActive === 'boolean') {
+                this.isActive = newSettings.isActive;
+            }
+
+            if (typeof newSettings.analysisInterval === 'number') {
+                this.analysisInterval = newSettings.analysisInterval;
+            }
+
+            const desiredEndpoint = newSettings.ollamaEndpoint
+                || (this.visionAgent ? this.visionAgent.ollamaEndpoint : 'http://localhost:8081');
+            const desiredModel = newSettings.vlmModel;
+
+            const shouldReinitializeVisionAgent = !this.visionAgent
+                || (newSettings.ollamaEndpoint && this.visionAgent.ollamaEndpoint !== newSettings.ollamaEndpoint);
+
+            if (shouldReinitializeVisionAgent) {
+                console.log('♻️ Reinitializing Vision Agent with updated settings...');
+                this.visionAgent = new VisionAgent(
+                    desiredEndpoint,
+                    desiredModel || (this.visionAgent ? this.visionAgent.visionModel : 'llava:7b')
+                );
+            } else if (desiredModel) {
+                if (typeof this.visionAgent.setVisionModel === 'function') {
+                    this.visionAgent.setVisionModel(desiredModel);
+                } else {
+                    this.visionAgent.visionModel = desiredModel;
+                }
+            }
+
+            if (this.visionAgent) {
+                this.visionAgent.ollamaEndpoint = desiredEndpoint;
+            }
+        } catch (error) {
+            console.error('Error applying settings update:', error);
+            throw error;
         }
     }
 
@@ -739,6 +800,9 @@ class ClaudeyBackground {
         const settings = {
             ...existing,
             ...this.currentSettings,
+        const currentSettings = await this.getSettings();
+        const settings = {
+            ...currentSettings,
             isActive: this.isActive,
             analysisInterval: this.analysisInterval
         };

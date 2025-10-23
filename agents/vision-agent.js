@@ -17,6 +17,10 @@ class VisionAgent {
         this.ollamaEndpoint = ollamaEndpoint;
         this.visionModel = 'llava:7b';
         this.embeddingModel = embeddingModel;
+    constructor(ollamaEndpoint = 'http://localhost:8081', visionModel = 'llava:7b') {
+        this.ollamaEndpoint = ollamaEndpoint;
+        this.visionModel = visionModel;
+        this.embeddingModel = 'nomic-embed-text';
         this.agentId = `vision-agent-${Date.now()}`;
         this.conversationHistory = [];
     }
@@ -27,6 +31,21 @@ class VisionAgent {
         }
         if (embeddingModel) {
             this.embeddingModel = embeddingModel;
+    setVisionModel(visionModel) {
+        if (!visionModel || typeof visionModel !== 'string') {
+            console.warn('VisionAgent: Invalid vision model provided, keeping existing model.');
+            return;
+        }
+
+        const normalizedModel = visionModel.trim();
+        if (!normalizedModel) {
+            console.warn('VisionAgent: Empty vision model provided, keeping existing model.');
+            return;
+        }
+
+        if (this.visionModel !== normalizedModel) {
+            console.log(`🔁 Updating vision model from ${this.visionModel} to ${normalizedModel}`);
+            this.visionModel = normalizedModel;
         }
     }
 
