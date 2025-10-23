@@ -766,11 +766,13 @@ class ClaudeyBackground {
     }
 
     async saveSettings() {
+        const currentSettings = await this.getSettings();
         const settings = {
+            ...currentSettings,
             isActive: this.isActive,
             analysisInterval: this.analysisInterval
         };
-        
+
         await chrome.storage.local.set({ claudeySettings: settings });
     }
 
