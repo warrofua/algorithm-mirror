@@ -799,13 +799,11 @@ class AlgorithmMirrorBackground {
         const existing = await this.getSettings();
         const settings = {
             ...existing,
-            ...this.currentSettings,
-        const currentSettings = await this.getSettings();
-        const settings = {
-            ...currentSettings,
-            isActive: this.isActive,
-            analysisInterval: this.analysisInterval
+            ...this.currentSettings
         };
+
+        settings.isActive = this.isActive;
+        settings.analysisInterval = this.analysisInterval;
 
         this.currentSettings = settings;
 
