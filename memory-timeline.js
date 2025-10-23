@@ -1,5 +1,5 @@
 /**
- * Claudey AI Vision - Memory Timeline Script
+ * Algorithm Mirror - Memory Timeline Script
  * Displays and manages the browsing memory timeline
  */
 

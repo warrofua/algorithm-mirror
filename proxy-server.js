@@ -75,7 +75,7 @@ app.get('/fetch-url', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Claudey AI Browser Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Algorithm Mirror Server running at http://localhost:${PORT}`);
   console.log(`📱 Open the browser interface at http://localhost:${PORT}`);
   console.log(`🌐 Proxy enabled - you can now browse any website!`);
 });

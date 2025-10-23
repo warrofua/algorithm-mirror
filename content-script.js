@@ -1,5 +1,5 @@
 /**
- * Claudey AI Vision - Content Script
+ * Algorithm Mirror - Content Script
  * Runs on all web pages to provide AI overlay and analysis
  */
 
@@ -38,7 +38,7 @@ class ClaudeyContentScript {
         // Setup page monitoring
         this.setupPageMonitoring();
         
-        console.log('Claudey AI Vision content script loaded');
+        console.log('Algorithm Mirror content script loaded');
     }
 
     async createOverlay() {
@@ -78,7 +78,7 @@ class ClaudeyContentScript {
                         <path d="M5 10v2a7 7 0 0 0 14 0v-2"/>
                         <line x1="12" x2="12" y1="19" y2="22"/>
                     </svg>
-                    AI Vision
+                    Algorithm Mirror
                 </h3>
                 <div class="claudey-controls">
                     <button id="claudey-capture" title="Manual Capture">📸</button>
@@ -97,7 +97,7 @@ class ClaudeyContentScript {
             
             <div class="claudey-analysis-feed" id="claudey-feed">
                 <div class="claudey-welcome">
-                    <p><strong>🔍 AI Vision Active</strong></p>
+                    <p><strong>🔍 Algorithm Mirror Active</strong></p>
                     <p>I'm watching and analyzing your browsing. I'll provide insights about the content you view.</p>
                 </div>
             </div>
@@ -183,12 +183,12 @@ class ClaudeyContentScript {
 
     onPageChange() {
         // Page content has changed significantly
-        console.log('Claudey: Page content changed');
+        console.log('Algorithm Mirror: Page content changed');
     }
 
     onScrollChange() {
         // User has scrolled, potentially viewing new content
-        console.log('Claudey: Scroll position changed');
+        console.log('Algorithm Mirror: Scroll position changed');
     }
 
     async handleMessage(message, sender, sendResponse) {
@@ -439,7 +439,7 @@ Focus on describing what content users are being served and shown.`;
         console.log('🧠 AI Analysis Result:', entry.analysis);
         
         // Show notification with analysis result
-        this.showNotification(`AI Vision: ${entry.category} detected - ${entry.analysis.substring(0, 80)}...`, 8000);
+        this.showNotification(`Algorithm Mirror: ${entry.category} detected - ${entry.analysis.substring(0, 80)}...`, 8000);
         
         // Update feed with new analysis
         this.updateAnalysisFeed(entry);

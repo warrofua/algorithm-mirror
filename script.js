@@ -1,5 +1,5 @@
 /**
- * Claudey AI Browser - Advanced Visual Intelligence System
+ * Algorithm Mirror - Advanced Visual Intelligence System
  * Features: VLM analysis, OCR, multimodal memory, real-time commentary
  */
 
@@ -33,7 +33,7 @@ class ClaudeyAIBrowser {
         this.setupEventListeners();
         this.initAI();
         this.startAnalysisEngine();
-        this.showToast('AI Browser initialized', 'success');
+        this.showToast('Algorithm Mirror initialized', 'success');
     }
 
     initElements() {
@@ -562,12 +562,12 @@ Focus on describing what content users are being served and shown.`;
         if (this.isAIActive) {
             this.updateAIStatus('AI Active', true);
             this.startAnalysisEngine();
-            this.showToast('AI Vision enabled', 'success');
+            this.showToast('Algorithm Mirror enabled', 'success');
         } else {
             this.updateAIStatus('AI Inactive', false);
             if (this.analysisInterval) clearInterval(this.analysisInterval);
             if (this.screenshotInterval) clearInterval(this.screenshotInterval);
-            this.showToast('AI Vision disabled', 'info');
+            this.showToast('Algorithm Mirror disabled', 'info');
         }
     }
 

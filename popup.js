@@ -1,5 +1,5 @@
 /**
- * Claudey AI Vision - Popup Script
+ * Algorithm Mirror - Popup Script
  * Handles the extension popup interface
  */
 
@@ -91,13 +91,13 @@ class ClaudeyPopup {
 
         if (this.isAIActive) {
             statusLight.style.background = '#30d158';
-            statusTitle.textContent = 'AI Vision Active';
+            statusTitle.textContent = 'Algorithm Mirror Active';
             statusDesc.textContent = 'Watching and analyzing your browsing';
             aiToggle.classList.add('active');
         } else {
             statusLight.style.background = '#ff453a';
             statusLight.style.animation = 'none';
-            statusTitle.textContent = 'AI Vision Inactive';
+            statusTitle.textContent = 'Algorithm Mirror Inactive';
             statusDesc.textContent = 'Click to enable automatic analysis';
             aiToggle.classList.remove('active');
         }
@@ -118,7 +118,7 @@ class ClaudeyPopup {
             
             this.updateUI();
             
-            let message = this.isAIActive ? 'AI Vision enabled' : 'AI Vision disabled';
+            let message = this.isAIActive ? 'Algorithm Mirror enabled' : 'Algorithm Mirror disabled';
             if (!this.isAIActive && response.cancelledAnalyses > 0) {
                 message += ` (${response.cancelledAnalyses} active analysis${response.cancelledAnalyses > 1 ? 'es' : ''} cancelled)`;
             }

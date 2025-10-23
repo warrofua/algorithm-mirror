@@ -1,5 +1,5 @@
 /**
- * Claudey AI Vision - Background Service Worker with Multi-Agent AI System
+ * Algorithm Mirror - Background Service Worker with Multi-Agent AI System
  * Handles extension lifecycle, tab monitoring, and orchestrated AI analysis
  */
 
@@ -52,7 +52,7 @@ class ClaudeyBackground {
     setupEventListeners() {
         // Extension installation
         chrome.runtime.onInstalled.addListener(() => {
-            console.log('Claudey AI Vision installed');
+            console.log('Algorithm Mirror installed');
             this.initializeStorage();
         });
 
@@ -79,7 +79,7 @@ class ClaudeyBackground {
                 this.performPeriodicAnalysis();
             } else {
                 // Optional: Log when periodic analysis is skipped due to inactive state
-                // console.log('⏸️ Periodic analysis skipped - AI Vision is inactive');
+                // console.log('⏸️ Periodic analysis skipped - Algorithm Mirror is inactive');
             }
         }, this.analysisInterval);
     }
@@ -97,7 +97,7 @@ class ClaudeyBackground {
             this.memoryStorage = new Map(result.claudeyMemory);
         }
 
-        console.log('Claudey AI Vision initialized');
+        console.log('Algorithm Mirror initialized');
     }
 
     async initializeStorage() {
@@ -518,7 +518,7 @@ class ClaudeyBackground {
                         
                         await this.saveSettings();
                         
-                        console.log(`🎛️ AI Vision ${this.isActive ? 'activated' : 'deactivated'}`);
+                        console.log(`🎛️ Algorithm Mirror ${this.isActive ? 'activated' : 'deactivated'}`);
                         sendResponse({ 
                             success: true, 
                             isActive: this.isActive,
