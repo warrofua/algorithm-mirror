@@ -1,5 +1,5 @@
 /**
- * Claudey AI Browser - Electron Renderer Process
+ * Algorithm Mirror - Electron Renderer Process
  * Handles UI interactions and communicates with main process
  */
 
@@ -29,7 +29,7 @@ class ClaudeyElectronRenderer {
         this.setupEventListeners();
         this.setupIPC();
         this.initAI();
-        this.showToast('Claudey AI Browser ready', 'success');
+        this.showToast('Algorithm Mirror ready', 'success');
         
         // Load existing memory data
         await this.loadMemoryData();
@@ -189,7 +189,7 @@ class ClaudeyElectronRenderer {
         );
         
         this.showToast(
-            this.isAIActive ? 'AI Vision enabled' : 'AI Vision disabled',
+            this.isAIActive ? 'Algorithm Mirror enabled' : 'Algorithm Mirror disabled',
             this.isAIActive ? 'success' : 'info'
         );
     }

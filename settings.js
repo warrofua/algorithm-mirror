@@ -1,5 +1,5 @@
 /**
- * Claudey AI Vision - Settings Script
+ * Algorithm Mirror - Settings Script
  * Manages extension configuration and system diagnostics
  */
 
@@ -175,10 +175,10 @@ class ClaudeySettings {
         
         if (this.settings.isActive) {
             toggle.classList.add('active');
-            label.textContent = 'AI Vision Active';
+            label.textContent = 'Algorithm Mirror Active';
         } else {
             toggle.classList.remove('active');
-            label.textContent = 'AI Vision Inactive';
+            label.textContent = 'Algorithm Mirror Inactive';
         }
     }
 
