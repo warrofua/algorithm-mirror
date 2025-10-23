@@ -4,25 +4,31 @@
  */
 
 class VisionAgent {
-    constructor(config = {}) {
-        if (typeof config === 'string') {
-            config = { ollamaEndpoint: config };
+    constructor(configOrEndpoint = {}, visionModelArg) {
+        let config = {};
+
+        if (typeof configOrEndpoint === 'string') {
+            config = {
+                ollamaEndpoint: configOrEndpoint,
+                visionModel: typeof visionModelArg === 'string' ? visionModelArg : undefined
+            };
+        } else if (configOrEndpoint && typeof configOrEndpoint === 'object') {
+            config = { ...configOrEndpoint };
         }
 
         const {
             ollamaEndpoint = 'http://localhost:8081',
-            embeddingModel = 'nomic-embed-text'
+            visionModel = 'llava:7b',
+            embeddingModel = 'nomic-embed-text',
+            agentId = `vision-agent-${Date.now()}`,
+            conversationHistory = []
         } = config;
 
         this.ollamaEndpoint = ollamaEndpoint;
-        this.visionModel = 'llava:7b';
-        this.embeddingModel = embeddingModel;
-    constructor(ollamaEndpoint = 'http://localhost:8081', visionModel = 'llava:7b') {
-        this.ollamaEndpoint = ollamaEndpoint;
         this.visionModel = visionModel;
-        this.embeddingModel = 'nomic-embed-text';
-        this.agentId = `vision-agent-${Date.now()}`;
-        this.conversationHistory = [];
+        this.embeddingModel = embeddingModel;
+        this.agentId = agentId;
+        this.conversationHistory = Array.isArray(conversationHistory) ? [...conversationHistory] : [];
     }
 
     updateEmbeddingConfig({ ollamaEndpoint, embeddingModel } = {}) {
@@ -31,6 +37,9 @@ class VisionAgent {
         }
         if (embeddingModel) {
             this.embeddingModel = embeddingModel;
+        }
+    }
+
     setVisionModel(visionModel) {
         if (!visionModel || typeof visionModel !== 'string') {
             console.warn('VisionAgent: Invalid vision model provided, keeping existing model.');
