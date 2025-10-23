@@ -3,10 +3,10 @@
  * Runs on all web pages to provide AI overlay and analysis
  */
 
-// Prevent multiple class declarations
-if (typeof ClaudeyContentScript === 'undefined') {
-    
-class ClaudeyContentScript {
+// Prevent multiple class declarations by attaching to window
+if (typeof window.ClaudeyContentScript === 'undefined') {
+
+window.ClaudeyContentScript = class ClaudeyContentScript {
     constructor() {
         this.isInjected = false;
         this.sidebar = null;
@@ -602,19 +602,19 @@ Focus on describing what content users are being served and shown.`;
             }, 300);
         }, 3000);
     }
-}
+};
 
 } // End of ClaudeyContentScript class definition check
 
+const initializeClaudeyContentScript = () => {
+    if (!window.claudeyContentScript) {
+        window.claudeyContentScript = new window.ClaudeyContentScript();
+    }
+};
+
 // Initialize content script only once
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!window.claudeyContentScript) {
-            window.claudeyContentScript = new ClaudeyContentScript();
-        }
-    });
+    document.addEventListener('DOMContentLoaded', initializeClaudeyContentScript, { once: true });
 } else {
-    if (!window.claudeyContentScript) {
-        window.claudeyContentScript = new ClaudeyContentScript();
-    }
+    initializeClaudeyContentScript();
 }
