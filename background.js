@@ -11,7 +11,7 @@ importScripts(
     'agents/semantic-tensor-memory.js'
 );
 
-class ClaudeyBackground {
+class AlgorithmMirrorBackground {
     constructor() {
         this.activeAnalysis = new Map();
         this.memoryStorage = new Map();
@@ -102,19 +102,19 @@ class ClaudeyBackground {
 
     async initializeExtension() {
         // Load saved state
-        const result = await chrome.storage.local.get(['claudeySettings', 'claudeyMemory']);
+        const result = await chrome.storage.local.get(['algorithmMirrorSettings', 'algorithmMirrorMemory']);
         
-        if (result.claudeySettings) {
-            this.isActive = result.claudeySettings.isActive !== false;
-            this.analysisInterval = result.claudeySettings.analysisInterval || 30000;
+        if (result.algorithmMirrorSettings) {
+            this.isActive = result.algorithmMirrorSettings.isActive !== false;
+            this.analysisInterval = result.algorithmMirrorSettings.analysisInterval || 30000;
             this.currentSettings = {
                 ...this.currentSettings,
-                ...result.claudeySettings
+                ...result.algorithmMirrorSettings
             };
         }
 
-        if (result.claudeyMemory) {
-            this.memoryStorage = new Map(result.claudeyMemory);
+        if (result.algorithmMirrorMemory) {
+            this.memoryStorage = new Map(result.algorithmMirrorMemory);
         }
 
         console.log('Algorithm Mirror initialized');
@@ -144,14 +144,14 @@ class ClaudeyBackground {
         };
 
         // Only initialize if settings don't exist, preserve existing memory
-        const existing = await chrome.storage.local.get(['claudeySettings', 'claudeyMemory']);
+        const existing = await chrome.storage.local.get(['algorithmMirrorSettings', 'algorithmMirrorMemory']);
         
         const updates = {};
-        if (!existing.claudeySettings) {
-            updates.claudeySettings = defaultSettings;
+        if (!existing.algorithmMirrorSettings) {
+            updates.algorithmMirrorSettings = defaultSettings;
         }
-        if (!existing.claudeyMemory) {
-            updates.claudeyMemory = [];
+        if (!existing.algorithmMirrorMemory) {
+            updates.algorithmMirrorMemory = [];
         }
         
         if (Object.keys(updates).length > 0) {
@@ -187,7 +187,7 @@ class ClaudeyBackground {
             // Check if content script is already injected
             const results = await chrome.scripting.executeScript({
                 target: { tabId },
-                func: () => !!window.claudeyInjected
+                func: () => !!window.algorithmMirrorInjected
             });
             
             if (results[0].result) {
@@ -715,7 +715,7 @@ class ClaudeyBackground {
         
         // Save to chrome storage (keep last 1000 entries)
         const memoryArray = Array.from(this.memoryStorage.entries()).slice(-1000);
-        await chrome.storage.local.set({ claudeyMemory: memoryArray });
+        await chrome.storage.local.set({ algorithmMirrorMemory: memoryArray });
         
         // Notify content scripts
         const tabs = await chrome.tabs.query({});
@@ -809,12 +809,12 @@ class ClaudeyBackground {
 
         this.currentSettings = settings;
 
-        await chrome.storage.local.set({ claudeySettings: settings });
+        await chrome.storage.local.set({ algorithmMirrorSettings: settings });
     }
 
     async getSettings() {
-        const result = await chrome.storage.local.get(['claudeySettings']);
-        return result.claudeySettings || {};
+        const result = await chrome.storage.local.get(['algorithmMirrorSettings']);
+        return result.algorithmMirrorSettings || {};
     }
 
     async applySettingsUpdate(newSettings = {}) {
@@ -1324,6 +1324,6 @@ Focus on describing what content users are being served and shown.`;
 }
 
 // Initialize background script only once
-if (!globalThis.claudeyBackground) {
-    globalThis.claudeyBackground = new ClaudeyBackground();
+if (!globalThis.algorithmMirrorBackground) {
+    globalThis.algorithmMirrorBackground = new AlgorithmMirrorBackground();
 }

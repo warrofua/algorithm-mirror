@@ -1,5 +1,5 @@
 {
-  "name": "claudey-ai-browser",
+  "name": "algorithm-mirror",
   "version": "1.0.0",
   "description": "AI-powered browser with visual intelligence and multimodal memory",
   "main": "electron-main.js",

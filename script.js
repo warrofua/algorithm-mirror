@@ -3,7 +3,7 @@
  * Features: VLM analysis, OCR, multimodal memory, real-time commentary
  */
 
-class ClaudeyAIBrowser {
+class AlgorithmMirrorAIBrowser {
     constructor() {
         // Core state
         this.isAIActive = true;
@@ -876,7 +876,7 @@ Focus on describing what content users are being served and shown.`;
                 currentUrl: this.currentUrl
             };
             
-            localStorage.setItem('claudey_state', JSON.stringify(state));
+            localStorage.setItem('algorithmMirror_state', JSON.stringify(state));
         } catch (error) {
             console.error('Failed to save state:', error);
         }
@@ -884,7 +884,7 @@ Focus on describing what content users are being served and shown.`;
 
     loadState() {
         try {
-            const saved = localStorage.getItem('claudey_state');
+            const saved = localStorage.getItem('algorithmMirror_state');
             if (saved) {
                 const state = JSON.parse(saved);
                 
@@ -912,7 +912,7 @@ Focus on describing what content users are being served and shown.`;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.claudeyBrowser = new ClaudeyAIBrowser();
+    window.algorithmMirrorBrowser = new AlgorithmMirrorAIBrowser();
 });
 
 // Add CSS for timeline and other dynamic elements
