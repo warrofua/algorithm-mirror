@@ -18,6 +18,7 @@ class ClaudeyBackground {
         this.isActive = true;
         this.analysisInterval = 30000; // 30 seconds
         this.lastCaptureTime = 0; // Rate limiting for screenshots
+        this.currentSettings = {};
         
         // Initialize multi-agent system
         this.initializeAgentSystem();
@@ -32,12 +33,18 @@ class ClaudeyBackground {
         // Get settings for endpoint configuration
         const settings = await this.getSettings();
         const endpoint = settings.ollamaEndpoint || 'http://localhost:8081';
-        
+        const embeddingModel = settings.embeddingModel || 'nomic-embed-text';
+        this.currentSettings = {
+            ...settings,
+            ollamaEndpoint: endpoint,
+            embeddingModel
+        };
+
         // Initialize only vision agent for now
-        // this.textAgent = new TextBrowsingAgent(endpoint);         // Commented out for now
-        this.visionAgent = new VisionAgent(endpoint);
+        // this.textAgent = new TextBrowsingAgent({ ollamaEndpoint: endpoint, embeddingModel }); // Commented out for now
+        this.visionAgent = new VisionAgent({ ollamaEndpoint: endpoint, embeddingModel });
         // this.orchestratorAgent = new OrchestratorAgent(endpoint); // Commented out for now
-        this.semanticMemory = new SemanticTensorMemory();
+        this.semanticMemory = new SemanticTensorMemory({ ollamaEndpoint: endpoint, embeddingModel });
         
         // Connect orchestrator to agents (commented out for now)
         // this.orchestratorAgent.initialize(this.textAgent, this.visionAgent);
@@ -91,6 +98,10 @@ class ClaudeyBackground {
         if (result.claudeySettings) {
             this.isActive = result.claudeySettings.isActive !== false;
             this.analysisInterval = result.claudeySettings.analysisInterval || 30000;
+            this.currentSettings = {
+                ...this.currentSettings,
+                ...result.claudeySettings
+            };
         }
 
         if (result.claudeyMemory) {
@@ -119,6 +130,7 @@ class ClaudeyBackground {
             isActive: true,
             analysisInterval: 30000,
             vlmModel: 'llava:7b',
+            embeddingModel: 'nomic-embed-text',
             ollamaEndpoint: 'http://localhost:8081'  // Use CORS proxy
         };
 
@@ -543,6 +555,17 @@ class ClaudeyBackground {
                 })();
                 return true;
 
+            case 'SETTINGS_UPDATED':
+                (async () => {
+                    try {
+                        const updatedSettings = await this.applySettingsUpdate(message.data || {});
+                        sendResponse({ success: true, settings: updatedSettings });
+                    } catch (error) {
+                        sendResponse({ success: false, error: error.message });
+                    }
+                })();
+                return true;
+
             case 'MANUAL_CAPTURE':
                 if (sender.tab) {
                     this.scheduleAnalysis(sender.tab.id, sender.tab.url);
@@ -712,17 +735,83 @@ class ClaudeyBackground {
     }
 
     async saveSettings() {
+        const existing = await this.getSettings();
         const settings = {
+            ...existing,
+            ...this.currentSettings,
             isActive: this.isActive,
             analysisInterval: this.analysisInterval
         };
-        
+
+        this.currentSettings = settings;
+
         await chrome.storage.local.set({ claudeySettings: settings });
     }
 
     async getSettings() {
         const result = await chrome.storage.local.get(['claudeySettings']);
         return result.claudeySettings || {};
+    }
+
+    async applySettingsUpdate(newSettings = {}) {
+        const mergedSettings = {
+            ...this.currentSettings,
+            ...newSettings
+        };
+
+        if (typeof mergedSettings.isActive === 'boolean') {
+            this.isActive = mergedSettings.isActive;
+        }
+
+        if (typeof mergedSettings.analysisInterval === 'number') {
+            this.analysisInterval = mergedSettings.analysisInterval;
+        }
+
+        const embeddingModel = mergedSettings.embeddingModel || 'nomic-embed-text';
+        const endpoint = mergedSettings.ollamaEndpoint || 'http://localhost:8081';
+
+        if (this.visionAgent) {
+            if (typeof this.visionAgent.updateEmbeddingConfig === 'function') {
+                this.visionAgent.updateEmbeddingConfig({
+                    embeddingModel,
+                    ollamaEndpoint: endpoint
+                });
+            } else {
+                this.visionAgent.embeddingModel = embeddingModel;
+                this.visionAgent.ollamaEndpoint = endpoint;
+            }
+        }
+
+        if (this.textAgent) {
+            if (typeof this.textAgent.updateEmbeddingConfig === 'function') {
+                this.textAgent.updateEmbeddingConfig({
+                    embeddingModel,
+                    ollamaEndpoint: endpoint
+                });
+            } else {
+                this.textAgent.embeddingModel = embeddingModel;
+                this.textAgent.ollamaEndpoint = endpoint;
+            }
+        }
+
+        if (this.semanticMemory) {
+            if (typeof this.semanticMemory.updateEmbeddingConfig === 'function') {
+                this.semanticMemory.updateEmbeddingConfig({
+                    embeddingModel,
+                    ollamaEndpoint: endpoint
+                });
+            } else {
+                this.semanticMemory.embeddingModel = embeddingModel;
+                this.semanticMemory.ollamaEndpoint = endpoint;
+            }
+        }
+
+        mergedSettings.embeddingModel = embeddingModel;
+        mergedSettings.ollamaEndpoint = endpoint;
+
+        this.currentSettings = mergedSettings;
+
+        return mergedSettings;
     }
 
     async getPageContent(tabId) {
